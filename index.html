@@ -2,7 +2,15 @@
 <meta charset="utf-8">
 <style>
 
-/* CSS goes here. */
+.q0-9 { fill:rgb(247,251,255); }
+.q1-9 { fill:rgb(222,235,247); }
+.q2-9 { fill:rgb(198,219,239); }
+.q3-9 { fill:rgb(158,202,225); }
+.q4-9 { fill:rgb(107,174,214); }
+.q5-9 { fill:rgb(66,146,198); }
+.q6-9 { fill:rgb(33,113,181); }
+.q7-9 { fill:rgb(8,81,156); }
+.q8-9 { fill:rgb(8,48,107); }
 
 </style>
 <body>
@@ -21,25 +29,49 @@
       .attr("height", height);
 
     d3.json("ga-counties.json", function(error, ga) {
-      var counties = topojson.feature(ga, ga.objects.counties);
-      var projection = d3.geo.albersUsa()
-        .scale(8000)
-        .translate([-1200, -400]);
-      var path = d3.geo.path().projection(projection);
-      svg.append("path")
-        .datum(counties)
-        .attr("d", path);
+      d3.csv("disasters.csv", function(error, data){
+        var consolidatedData = {};
 
-      svg.selectAll(".county")
-          .data(topojson.feature(ga, ga.objects.counties).features)
-        .enter().append("path")
-          .attr("class", function(d) { return "county " + d.id; })
-          .attr("d", path)
-          .attr("fill", function(d) {
-            return "blue";
-          })
-          .attr("stroke", "white")
-          .each(function(d) {console.log(d.properties.name)})
+        data.forEach(function(v,i){
+          if(v["FIPS_CODE"] in consolidatedData) {
+            consolidatedData[v["FIPS_CODE"]] += 1
+          } else {
+            consolidatedData[v["FIPS_CODE"]] = 0
+          }
+        });
+
+        var quantize = d3.scale.quantize()
+            .domain([0, d3.max(d3.values(consolidatedData))])
+            .range(d3.range(9).map(function(i) { return "q" + i + "-9"; }));
+
+        var mapData = topojson.feature(ga, ga.objects.counties).features
+
+        mapData.forEach(function(v,i){
+          var id = v.id;
+          var thisData = consolidatedData[id] || 0;
+          v.data = thisData;
+        });
+
+        var counties = topojson.feature(ga, ga.objects.counties);
+        var projection = d3.geo.albersUsa()
+          .scale(8000)
+          .translate([-1200, -400]);
+        var path = d3.geo.path().projection(projection);
+        svg.append("path")
+          .datum(counties)
+          .attr("d", path);
+
+        svg.selectAll(".county")
+            .data(mapData)
+          .enter().append("path")
+            .attr("class", function(d) { return "county " + d.id; })
+            .attr("d", path)
+            .attr("class", function(d) {
+              return quantize(d.data);
+            })
+            .attr("stroke", "white")
+        console.log(ga, ga.objects.counties, topojson.feature(ga, ga.objects.counties).features)
+      });
     });
 
 
