@@ -34,4 +34,3 @@ Open [http://localhost:8000/ga-disasters/](http://localhost:8000/ga-disasters/)
 - Unify styles/colors.
 - Comment code.
 - Add spinner for the 2 sec loading time.
-- Add legend.

@@ -29,13 +29,40 @@ svg {
 }
 
 .options-container {
-  margin-left: 10px;
+  clear: both;
 }
 
 .options-container select {
   width: 230px;
+  margin: 10px 90px;
 }
 
 .map-container {
   overflow: hidden;
+  clear: both;
+}
+
+.legend {
+  background-image: -ms-linear-gradient(left, #C9E4FF 0%, #08306B 100%);
+  background-image: -moz-linear-gradient(left, #C9E4FF 0%, #08306B 100%);
+  background-image: -o-linear-gradient(left, #C9E4FF 0%, #08306B 100%);
+  background-image: -webkit-gradient(linear, left top, right top, color-stop(0, #C9E4FF), color-stop(1, #08306B));
+  background-image: -webkit-linear-gradient(left, #C9E4FF 0%, #08306B 100%);
+  background-image: linear-gradient(to right, #C9E4FF 0%, #08306B 100%);
+  width: 550px;
+  margin: 10px 0 30px 90px;
+  float: left;
+}
+
+.low, .high {
+  float: left;
+  position: relative;
+  top: 18px;
+  font-size: 12px;
+  left: 2px;
+}
+
+.high {
+  float: right;
+  left: -2px;
 }

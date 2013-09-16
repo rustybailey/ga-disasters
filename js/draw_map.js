@@ -47,9 +47,13 @@ d3.json("data/ga-counties.json", function(error, ga) {
       }
     });
 
+    var maxFreq = d3.max(d3.values(consolidatedData), function(d) {return d.total});
+    d3.select(".low").text(1);
+    d3.select(".high").text(maxFreq);
+
     var color = d3.scale.linear()
-        .domain([1, d3.max(d3.values(consolidatedData), function(d) {return d.total})])
-        .range(["#F7FBFF","#08306B"]);
+        .domain([1, maxFreq])
+        .range(["#C9E4FF","#08306B"]);
 
     var counties = topojson.feature(ga, ga.objects.counties);
     var mapData = counties.features;
@@ -76,7 +80,7 @@ d3.json("data/ga-counties.json", function(error, ga) {
         .attr("class", function(d) { return "county " + d.id; })
         .attr("fill", function(d) { return d.data.total > 0 ? color(d.data.total) : "white"})
         .attr("d", path)
-        .attr("stroke", "lightblue")
+        .attr("stroke", "lightgrey")
         .on("mouseover", function(){return tooltip.style("visibility", "visible");})
         .on("mousemove", function(d){
           return tooltip
@@ -88,7 +92,9 @@ d3.json("data/ga-counties.json", function(error, ga) {
     d3.select("select").on("change", function(){
       var selected = d3.select(this)[0][0][this.selectedIndex];
       var type = selected.value;
-      color.domain([0, d3.max(d3.values(consolidatedData), function(d) {return d[type]})])
+      maxFreq = d3.max(d3.values(consolidatedData), function(d) {return d[type]});
+      d3.select(".high").text(maxFreq);
+      color.domain([0, maxFreq]);
       d3.selectAll(".county")
         .attr("fill", function(d) { return d.data[type] > 0 ? color(d.data[type]) : "white" })
         .on("mousemove", function(d){
