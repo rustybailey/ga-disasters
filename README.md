@@ -24,7 +24,7 @@ Open [http://localhost:8000/ga-disasters/](http://localhost:8000/ga-disasters/)
 - [US Atlas TopoJSON (mbostock/us-atlas)](https://github.com/mbostock/us-atlas) 
 - [d3 Geo Projections](https://github.com/mbostock/d3/wiki/Geo-Projections)
 
-
+---------------------------------------
 
 #### TODO:
 
