@@ -28,7 +28,6 @@ Open [http://localhost:8000/ga-disasters/](http://localhost:8000/ga-disasters/)
 
 #### TODO:
 
-- Change buttons to a simple dropdown.
 - Scale by property damage instead of frequency (change header to reflect this).
 - Also break down by year.
 - Change colors to green?

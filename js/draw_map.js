@@ -2,7 +2,7 @@
 var width = 700,
     height = 700;
 
-var svg = d3.select("body").append("svg")
+var svg = d3.select(".map-container").append("svg")
   .attr("width", width)
   .attr("height", height);
 
@@ -22,9 +22,8 @@ d3.json("data/ga-counties.json", function(error, ga) {
     });
 
     disasterTypes.sort().forEach(function(v, i){
-      d3.select(".options-container").append("button")
-        .attr("class", "data-option")
-        .attr("data-type", v)
+      d3.select("select").append("option")
+        .attr("value", v)
         .text(v)
     })
 
@@ -85,11 +84,9 @@ d3.json("data/ga-counties.json", function(error, ga) {
         })
         .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
 
-    d3.selectAll("button").on("click", function(){
-      var selected = d3.select(this);
-      var type = selected.attr("data-type");
-      d3.selectAll("button").classed("current", false);
-      selected.classed("current", true);
+    d3.select("select").on("change", function(){
+      var selected = d3.select(this)[0][0][this.selectedIndex];
+      var type = selected.value;
       quantize.domain([0, d3.max(d3.values(consolidatedData), function(d) {return d[type]})])
       d3.selectAll(".county")
         .attr("class", function(d) { return "county " + d.id + " " + (quantize(d.data[type] || 0)); })

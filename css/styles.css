@@ -41,6 +41,14 @@ svg {
   margin-left: 10px;
 }
 
+.options-container select {
+  width: 230px;
+}
+
+.map-container {
+  overflow: hidden;
+}
+
 .data-option {
   -moz-box-shadow: inset 0px 1px 0px 0px #dcecfb;
   -webkit-box-shadow: inset 0px 1px 0px 0px #dcecfb;
