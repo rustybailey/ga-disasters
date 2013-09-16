@@ -2,6 +2,20 @@
 <meta charset="utf-8">
 <style>
 
+body, html {
+  font-family: Arial;
+  margin: 0;
+  padding: 0;
+}
+
+.visualization-title {
+  width: 100%;
+  background-color: lightblue;
+  color: black;
+  padding: 8px;
+  margin: 8px 0;
+}
+
 .q0-9 { fill:rgb(247,251,255); }
 .q1-9 { fill:rgb(222,235,247); }
 .q2-9 { fill:rgb(198,219,239); }
@@ -27,17 +41,52 @@ svg {
   border-radius: 5px;
 }
 
+.options-container {
+  margin-left: 10px;
+}
+
+.data-option {
+  -moz-box-shadow: inset 0px 1px 0px 0px #dcecfb;
+  -webkit-box-shadow: inset 0px 1px 0px 0px #dcecfb;
+  box-shadow: inset 0px 1px 0px 0px #dcecfb;
+  background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #bddbfa), color-stop(1, #80b5ea) );
+  background: -moz-linear-gradient( center top, #bddbfa 5%, #80b5ea 100% );
+  filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#bddbfa', endColorstr='#80b5ea');
+  background-color: #bddbfa;
+  text-indent: 0;
+  border: 1px solid #84bbf3;
+  display: inline-block;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: bold;
+  font-style: normal;
+  padding: 5px 10px;
+  text-decoration: none;
+  text-align: center;
+  text-shadow: 1px 1px 0px #528ecc;
+  cursor:  pointer;
+}
+.data-option:hover, .data-option.current {
+  background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #80b5ea), color-stop(1, #bddbfa) );
+  background: -moz-linear-gradient( center top, #80b5ea 5%, #bddbfa 100% );
+  filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#80b5ea', endColorstr='#bddbfa');
+  background-color: #80b5ea;
+}
+
 </style>
 <body>
 
-
+  <h1 class="visualization-title">Georgia Disasters: 2010-2012</h1>
+  <div class="options-container">
+    <button class="data-option current" data-type="total">Total</button>
+  </div>
 
   <script src="http://d3js.org/d3.v3.min.js"></script>
   <script src="http://d3js.org/topojson.v1.min.js"></script>
   <script>
 
-    var width = 960,
-        height = 760;
+    var width = 700,
+        height = 700;
 
     var svg = d3.select("body").append("svg")
       .attr("width", width)
@@ -46,22 +95,47 @@ svg {
     var tooltip = d3.select("body")
       .append("div")
       .attr("class", "tooltip")
-      .text("a simple tooltip");
 
     d3.json("ga-counties.json", function(error, ga) {
       d3.csv("disasters.csv", function(error, data){
         var consolidatedData = {};
+        var disasterTypes = [];
+
+        data.forEach(function(v,i){
+          if(disasterTypes.indexOf(v["HAZARD_TYPE_COMBO"]) === -1){
+            disasterTypes.push(v["HAZARD_TYPE_COMBO"])
+          }
+        });
+
+        disasterTypes.sort().forEach(function(v, i){
+          d3.select(".options-container").append("button")
+            .attr("class", "data-option")
+            .attr("data-type", v)
+            .text(v)
+        })
 
         data.forEach(function(v,i){
           if(v["FIPS_CODE"] in consolidatedData) {
-            consolidatedData[v["FIPS_CODE"]] += 1
+            consolidatedData[v["FIPS_CODE"]].total += 1
+            if(v["HAZARD_TYPE_COMBO"] in consolidatedData[v["FIPS_CODE"]]) {
+              consolidatedData[v["FIPS_CODE"]][v["HAZARD_TYPE_COMBO"]] += 1
+            } else {
+              consolidatedData[v["FIPS_CODE"]][v["HAZARD_TYPE_COMBO"]] = 1
+            }
           } else {
-            consolidatedData[v["FIPS_CODE"]] = 0
+            consolidatedData[v["FIPS_CODE"]] = {}
+            consolidatedData[v["FIPS_CODE"]].total = 1
+            if(v["HAZARD_TYPE_COMBO"] in consolidatedData[v["FIPS_CODE"]]) {
+              consolidatedData[v["FIPS_CODE"]][v["HAZARD_TYPE_COMBO"]] += 1
+            } else {
+              consolidatedData[v["FIPS_CODE"]][v["HAZARD_TYPE_COMBO"]] = 1
+            }
+            
           }
         });
 
         var quantize = d3.scale.quantize()
-            .domain([0, d3.max(d3.values(consolidatedData))])
+            .domain([0, d3.max(d3.values(consolidatedData), function(d) {return d.total})])
             .range(d3.range(9).map(function(i) { return "q" + i + "-9"; }));
 
         var mapData = topojson.feature(ga, ga.objects.counties).features
@@ -85,17 +159,32 @@ svg {
         svg.selectAll(".county")
             .data(mapData)
           .enter().append("path")
-            .attr("class", function(d) { return "county " + d.id + " " + quantize(d.data); })
+            .attr("class", function(d) { return "county " + d.id + " " + (quantize(d.data.total || 0)); })
             .attr("d", path)
             .attr("stroke", "white")
             .on("mouseover", function(){return tooltip.style("visibility", "visible");})
             .on("mousemove", function(d){
               return tooltip
                 .style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px")
-                .text(d.properties.name + " : " + d.data)
+                .text(d.properties.name + " : " + (d.data.total || 0))
             })
             .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
-        console.log(ga, ga.objects.counties, topojson.feature(ga, ga.objects.counties).features)
+        console.log(ga, ga.objects.counties, mapData)
+
+        d3.selectAll("button").on("click", function(){
+          var selected = d3.select(this);
+          var type = selected.attr("data-type");
+          d3.selectAll("button").classed("current", false);
+          selected.classed("current", true);
+          quantize.domain([0, d3.max(d3.values(consolidatedData), function(d) {return d[type]})])
+          d3.selectAll(".county")
+            .attr("class", function(d) { return "county " + d.id + " " + (quantize(d.data[type] || 0)); })
+            .on("mousemove", function(d){
+              return tooltip
+                .style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px")
+                .text(d.properties.name + " : " + (d.data[type] || 0))
+            })
+        })
       });
     });
 
