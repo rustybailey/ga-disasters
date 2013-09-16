@@ -10,8 +10,8 @@ var tooltip = d3.select("body")
   .append("div")
   .attr("class", "tooltip")
 
-d3.json("ga-counties.json", function(error, ga) {
-  d3.csv("disasters.csv", function(error, data){
+d3.json("data/ga-counties.json", function(error, ga) {
+  d3.csv("data/disasters.csv", function(error, data){
     var consolidatedData = {};
     var disasterTypes = [];
 
@@ -80,11 +80,10 @@ d3.json("ga-counties.json", function(error, ga) {
         .on("mouseover", function(){return tooltip.style("visibility", "visible");})
         .on("mousemove", function(d){
           return tooltip
-            .style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px")
+            .style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px")
             .text(d.properties.name + " : " + (d.data.total || 0))
         })
         .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
-    console.log(ga, ga.objects.counties, mapData)
 
     d3.selectAll("button").on("click", function(){
       var selected = d3.select(this);
@@ -96,7 +95,7 @@ d3.json("ga-counties.json", function(error, ga) {
         .attr("class", function(d) { return "county " + d.id + " " + (quantize(d.data[type] || 0)); })
         .on("mousemove", function(d){
           return tooltip
-            .style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px")
+            .style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px")
             .text(d.properties.name + " : " + (d.data[type] || 0))
         })
     })
