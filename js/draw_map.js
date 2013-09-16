@@ -47,9 +47,9 @@ d3.json("data/ga-counties.json", function(error, ga) {
       }
     });
 
-    var quantize = d3.scale.quantize()
-        .domain([0, d3.max(d3.values(consolidatedData), function(d) {return d.total})])
-        .range(d3.range(9).map(function(i) { return "q" + i + "-9"; }));
+    var color = d3.scale.linear()
+        .domain([1, d3.max(d3.values(consolidatedData), function(d) {return d.total})])
+        .range(["#F7FBFF","#08306B"]);
 
     var counties = topojson.feature(ga, ga.objects.counties);
     var mapData = counties.features;
@@ -73,7 +73,8 @@ d3.json("data/ga-counties.json", function(error, ga) {
     svg.selectAll(".county")
         .data(mapData)
       .enter().append("path")
-        .attr("class", function(d) { return "county " + d.id + " " + (quantize(d.data.total || 0)); })
+        .attr("class", function(d) { return "county " + d.id; })
+        .attr("fill", function(d) { return color(d.data.total)})
         .attr("d", path)
         .attr("stroke", "lightblue")
         .on("mouseover", function(){return tooltip.style("visibility", "visible");})
@@ -87,9 +88,9 @@ d3.json("data/ga-counties.json", function(error, ga) {
     d3.select("select").on("change", function(){
       var selected = d3.select(this)[0][0][this.selectedIndex];
       var type = selected.value;
-      quantize.domain([0, d3.max(d3.values(consolidatedData), function(d) {return d[type]})])
+      color.domain([0, d3.max(d3.values(consolidatedData), function(d) {return d[type]})])
       d3.selectAll(".county")
-        .attr("class", function(d) { return "county " + d.id + " " + (quantize(d.data[type] || 0)); })
+        .attr("fill", function(d) { return color(d.data[type]); })
         .on("mousemove", function(d){
           return tooltip
             .style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px")
