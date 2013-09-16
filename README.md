@@ -3,7 +3,9 @@ Georgia Disasters Visualization
 
 Map visualization based on Georgia disaster data from 2010-2012, specifically showing the frequency of disaster types per county. Based on data from [Emcien's](https://github.com/emcien) [Data Visualization Challenge](https://github.com/emcien/jobs).
 
-## Setup
+Check it out here: [http://georgia-disasters.herokuapp.com/](http://georgia-disasters.herokuapp.com/)
+
+## Local Setup
 
 Clone this repo
 ```shell
