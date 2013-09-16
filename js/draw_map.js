@@ -74,7 +74,7 @@ d3.json("data/ga-counties.json", function(error, ga) {
         .data(mapData)
       .enter().append("path")
         .attr("class", function(d) { return "county " + d.id; })
-        .attr("fill", function(d) { return color(d.data.total)})
+        .attr("fill", function(d) { return d.data.total > 0 ? color(d.data.total) : "white"})
         .attr("d", path)
         .attr("stroke", "lightblue")
         .on("mouseover", function(){return tooltip.style("visibility", "visible");})
@@ -90,7 +90,7 @@ d3.json("data/ga-counties.json", function(error, ga) {
       var type = selected.value;
       color.domain([0, d3.max(d3.values(consolidatedData), function(d) {return d[type]})])
       d3.selectAll(".county")
-        .attr("fill", function(d) { return color(d.data[type]); })
+        .attr("fill", function(d) { return d.data[type] > 0 ? color(d.data[type]) : "white" })
         .on("mousemove", function(d){
           return tooltip
             .style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px")
