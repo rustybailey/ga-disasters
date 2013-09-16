@@ -47,12 +47,13 @@ d3.json("data/ga-counties.json", function(error, ga) {
       }
     });
 
+    var minFreq = d3.min(d3.values(consolidatedData), function(d) {return d.total});
     var maxFreq = d3.max(d3.values(consolidatedData), function(d) {return d.total});
-    d3.select(".low").text(1);
+    d3.select(".low").text(minFreq);
     d3.select(".high").text(maxFreq);
 
     var color = d3.scale.linear()
-        .domain([1, maxFreq])
+        .domain([minFreq, maxFreq])
         .range(["#C9E4FF", "#08306B"]);
 
     var counties = topojson.feature(ga, ga.objects.counties);
@@ -92,9 +93,11 @@ d3.json("data/ga-counties.json", function(error, ga) {
     d3.select("select").on("change", function(){
       var selected = d3.select(this)[0][0][this.selectedIndex];
       var type = selected.value;
+      minFreq = d3.min(d3.values(consolidatedData), function(d) {return d[type]});
       maxFreq = d3.max(d3.values(consolidatedData), function(d) {return d[type]});
+      d3.select(".low").text(minFreq);
       d3.select(".high").text(maxFreq);
-      color.domain([0, maxFreq]);
+      color.domain([minFreq, maxFreq]);
       d3.selectAll(".county")
         .attr("fill", function(d) { return d.data[type] > 0 ? color(d.data[type]) : "white" })
         .on("mousemove", function(d){
