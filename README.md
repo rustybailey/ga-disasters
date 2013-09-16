@@ -1,7 +1,7 @@
 Georgia Disasters Visualization
 ============
 
-Map visualization based on Georgia disaster data from 2010-2012, specifically showing the frequency of disaster types per county. Based on data from [Emcien's Data Visualization Challenge](https://github.com/emcien/jobs/blob/master/disasters.csv).
+Map visualization based on Georgia disaster data from 2010-2012, specifically showing the frequency of disaster types per county. Based on data from [Emcien's](https://github.com/emcien) [Data Visualization Challenge](https://github.com/emcien/jobs).
 
 ## Setup
 
@@ -10,13 +10,13 @@ Clone this repo
 git clone git@github.com:rustybailey/ga-disasters.git
 ```
 
-Start a local server. Python is shown below, but you can use any local server.
+Start a local server. Python is shown below, but you can use any simple local server.
 
 ```shell
 python -m SimpleHTTPServer 8000
 ```
 
-Open http://localhost:8000/ga-disasters/
+Open [http://localhost:8000/ga-disasters/](http://localhost:8000/ga-disasters/)
 
 ## Resources
 
@@ -26,7 +26,7 @@ Open http://localhost:8000/ga-disasters/
 
 
 
-### TODO
+#### TODO:
 
 - Change buttons to a simple dropdown.
 - Scale by property damage instead of frequency (change header to reflect this).
