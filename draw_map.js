@@ -1,3 +1,4 @@
+
 var width = 700,
     height = 700;
 
@@ -51,7 +52,8 @@ d3.json("ga-counties.json", function(error, ga) {
         .domain([0, d3.max(d3.values(consolidatedData), function(d) {return d.total})])
         .range(d3.range(9).map(function(i) { return "q" + i + "-9"; }));
 
-    var mapData = topojson.feature(ga, ga.objects.counties).features
+    var counties = topojson.feature(ga, ga.objects.counties);
+    var mapData = counties.features;
 
     mapData.forEach(function(v,i){
       var id = v.id;
@@ -59,7 +61,7 @@ d3.json("ga-counties.json", function(error, ga) {
       v.data = thisData;
     });
 
-    var counties = topojson.feature(ga, ga.objects.counties);
+
     var projection = d3.geo.albersUsa()
       .scale(8000)
       .translate([-1200, -400]);
@@ -74,7 +76,7 @@ d3.json("ga-counties.json", function(error, ga) {
       .enter().append("path")
         .attr("class", function(d) { return "county " + d.id + " " + (quantize(d.data.total || 0)); })
         .attr("d", path)
-        .attr("stroke", "white")
+        .attr("stroke", "lightblue")
         .on("mouseover", function(){return tooltip.style("visibility", "visible");})
         .on("mousemove", function(d){
           return tooltip
