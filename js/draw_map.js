@@ -53,7 +53,7 @@ d3.json("data/ga-counties.json", function(error, ga) {
 
     var color = d3.scale.linear()
         .domain([1, maxFreq])
-        .range(["#C9E4FF","#08306B"]);
+        .range(["#C9E4FF", "#08306B"]);
 
     var counties = topojson.feature(ga, ga.objects.counties);
     var mapData = counties.features;
@@ -80,7 +80,7 @@ d3.json("data/ga-counties.json", function(error, ga) {
         .attr("class", function(d) { return "county " + d.id; })
         .attr("fill", function(d) { return d.data.total > 0 ? color(d.data.total) : "white"})
         .attr("d", path)
-        .attr("stroke", "lightgrey")
+        .attr("stroke", "grey")
         .on("mouseover", function(){return tooltip.style("visibility", "visible");})
         .on("mousemove", function(d){
           return tooltip

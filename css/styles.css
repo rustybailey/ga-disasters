@@ -6,10 +6,12 @@ body, html {
 
 .visualization-title {
   width: 100%;
-  background-color: lightblue;
+  background-color: #C9E4FF;
   color: black;
   padding: 10px;
-  margin: 8px 0;
+  padding-left: 70px;
+  margin: 0 0 15px 0;
+  border-top: 4px solid #08306B
 }
 
 svg {
