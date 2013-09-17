@@ -108,8 +108,8 @@ d3.json("data/ga-counties.json", function(error, ga) {
 
     // Filter data on disaster type when select box is changed
     d3.select("select").on("change", function(){
-      var selected = d3.select(this)[0][0][this.selectedIndex],
-        type = selected.value;
+      var selected = d3.select("option:checked"),
+        type = selected.attr("value");
       minMaxFreq = d3.extent(d3.values(consolidatedData), function(d) {return d[type]});
       d3.select(".low").text(minMaxFreq[0]);
       d3.select(".high").text(minMaxFreq[1]);
