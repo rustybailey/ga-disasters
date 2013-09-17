@@ -34,8 +34,6 @@ Open [http://localhost:8000/ga-disasters/](http://localhost:8000/ga-disasters/)
 - Also filter by year.
 - If only one county is highlighted, show darker color.
 - Change colors to green?
-- Unify styles/colors.
-- Comment code.
 - Add spinner for the 2 sec loading time.
 - Sparklines by disaster type showing disaster trending over time.
 
